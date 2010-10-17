@@ -1,0 +1,9 @@
+# Lingualizer (unfinished; non-functioning)
+A collection of Django data models and web-based tools for representing
+poems as highly detailed and coherent linguistic data-sets.
+
+Info: http://www.triviumcooperative.org/lingualizer/
+      http://github.com/mitchsmith/Lingualizer/wiki/
+
+Progress Note: None yet. First steps will be to recreate the existing
+               mysql database in Django and populate the dictionary.
