@@ -9,16 +9,16 @@ More Info: http://github.com/mitchsmith/Lingualizer/wiki/
 
 Lingualizer is currently being developed and tested using:
 
-Python==3.4.0
-Flask==0.10.1
-SQLAlchemy==0.9.4
-WTForms==2.0
+- Python==3.4.0
+- Flask==0.10.1
+- SQLAlchemy==0.9.4
+- WTForms==2.0
 
 (see requirements.txt)
 
 Additionally, to use MySQL in place of sqlite3 will also require:
 
-PyMySQL==0.6.2
+- PyMySQL==0.6.2
 
 and eventually, the REST api will probably need PyYAML to make up for deficient unicode support in json and simplejson.  
 
@@ -54,7 +54,9 @@ pip install -r reqirements.txt
 ##Notes to Self
 
 ###Segments and Phonemes
+
 http://linguistics.byu.edu/faculty/eddingtond/223/distinctive%20features%20chart.pdf
+
 http://www.sfs.uni-tuebingen.de/~cebert/teaching/10PhonPhon/handout06.pdf
 
 In this schema, the basic element to be instantiated and stored is a `segment`,
@@ -65,7 +67,7 @@ in order to allow the user to make fine adjustments to the phonetic realization
 of a poem, and is intended to generate a more supple data set on which to train
 an nltk nerual net based phonological AI than could be genreated procedurally.
 
-segment_prototypes:
+###segment_prototypes:
     The set of attested speech sounds indexed by IPA symbol, IPA generic classi-
     fication, and distinctive feature bundle. A segment prototype serves a dual
     function:
@@ -81,7 +83,7 @@ segment_prototypes:
     segment instance can look up it's phonetic realization as a function of its
     context and a set of rules given by its parent phoneme. See example 1 below.
 
-phonemes:
+###phonemes:
     This table contains rows corresponding to the phonemic inventory for a given
     language. Each phoneme consists of a reference to a prototypical segment or
     "phone" (in other words, a row in the segment_prototypes table), a language
@@ -89,19 +91,20 @@ phonemes:
     when applied to a feature bundle in a given context, yields a foreign key to
     a sement_prototype representing its phonetic realization in that context.
 
-segments:
+###segments:
    
 
-Example 1.
+####Example 1.
 
 Given the string "pet spaniel":
 1. split the string into words "pet" and "spaniel"
 2. look up the phonemic transcription of each to yield "pɛt" and "spæn.jəl"
 3. instantiate new segment objects for each element in ["p","ə","t"] and
    ["s", "p", "æ", "n", ".", "j", "ə", "l"]
-   a) Look up "p" in phonemes where language is English to retrieve the phoneme
+   1. Look up "p" in phonemes where language is English to retrieve the phoneme
       represented by the first element in ["p","ə","t"] to create a new intance
       of /p/:
+
           {
               "p": {
                   "prototype" : segment_prototype.get("p"),
@@ -109,9 +112,11 @@ Given the string "pet spaniel":
                   "rules": ("/p/ --> [pʰ] /#__/", "/p/ --> [p] /v__V/", "etc...")
               }
           }
+      
       then apply this template to instantiate and initialize each occurance of
       the symbol `p` in the text as a new segment represneting /p/.
-   b) To obtain the phonetic realization of a given segment, retrieve it's
+
+   2. To obtain the phonetic realization of a given segment, retrieve it's
       prototype. Since each segment instance is addressable by it's own position
       within the text, it can determine it's context and apply the appropriate
       transfromation rule, in this case yielding [pʰ] and [p] respectively.
