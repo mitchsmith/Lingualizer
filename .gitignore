@@ -1,0 +1,11 @@
+# Ignore .pyc and cache files
+*.pyc
+__pycache__
+__pycache__/*
+
+# Ignore temporary and swap files
+*.swp
+*.bak
+
+# Ignore the sqlite3 database for now, as this will be changing a lot.
+*.db
