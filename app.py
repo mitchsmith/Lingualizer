@@ -19,14 +19,14 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 import models
-import forms
+from forms import SegmentPrototypeForm
 
 # routes
 @app.route('/')
 def index():
     """Segment_prototype list view."""
     segment_prototypes = db.session.query(models.SegmentPrototype)
-    form = forms.SegmentPrototypeForm()
+    form = SegmentPrototypeForm()
     return render_template('index.html', segment_prototypes=segment_prototypes, form=form)
 
 @app.route('/add', methods=['POST'])
@@ -34,40 +34,44 @@ def add_segment_prototype():
     """Adds new segment_prototype to the database."""
     if not session.get('logged_in'):
         abort(401)
-    new_segment_prototype = models.SegmentPrototype(
-            request.form['ipa_group'],
-            request.form['ipa_name'],
-            request.form['ipa_symbol'],
-            request.form['ipa_manner'],
-            request.form['ipa_major_place'],
-            request.form['ipa_minor_place'],
-            request.form['ipa_voice'],
-            request.form['syllabic'],
-            request.form['consonantal'],
-            request.form['approximant'],
-            request.form['sonorant'],
-            request.form['voice'],
-            request.form['constricted_glottis'],
-            request.form['continuant'],
-            request.form['nasal'],
-            request.form['strident'],
-            request.form['lateral'],
-            request.form['labial'],
-            request.form['round'],
-            request.form['coronal'],
-            request.form['anterior'],
-            request.form['distributed'],
-            request.form['dorsal'],
-            request.form['back'],
-            request.form['low'],
-            request.form['tense'],
-            request.form['radical'],
-            request.form['laryngeal'],
-            request.form['high']
+    form = SegmentPrototypeForm()
+    if form.validate_on_submit():
+        new_segment_prototype = models.SegmentPrototype(
+            form.ipa_group.data,
+            form.ipa_name.data,
+            form.ipa_symbol.data,
+            form.ipa_manner.data,
+            form.ipa_major_place.data,
+            form.ipa_minor_place.data,
+            form.ipa_voice.data,
+            form.syllabic.data,
+            form.consonantal.data,
+            form.approximant.data,
+            form.sonorant.data,
+            form.voice.data,
+            form.spread_glottis.data,
+            form.constricted_glottis.data,
+            form.continuant.data,
+            form.nasal.data,
+            form.strident.data,
+            form.lateral.data,
+            form.labial.data,
+            form.round.data,
+            form.coronal.data,
+            form.anterior.data,
+            form.distributed.data,
+            form.dorsal.data,
+            form.back.data,
+            form.low.data,
+            form.tense.data,
+            form.radical.data,
+            form.laryngeal.data,
+            form.high.data
         )
-    db.session.add(new_segment_prototype)
-    db.session.commit()
-    flash('New segment_prototype was successfully posted')
+
+        db.session.add(new_segment_prototype)
+        db.session.commit()
+        flash('New segment_prototype was successfully posted')
     return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])

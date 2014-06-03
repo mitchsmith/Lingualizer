@@ -99,4 +99,4 @@ class SegmentPrototype(db.Model):
         self.high = high
 
     def __repr__(self):
-        return '<ipa_symbol {}> <ipa_name {}>'.format(self.body)
+        return '<ipa_symbol {}> <ipa_name {}>'.format(self.ipa_symbol, self.ipa_name)
