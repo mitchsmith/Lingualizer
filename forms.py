@@ -1,9 +1,10 @@
 from flask.ext.wtf import Form
-from wtforms import BooleanField, StringField, SelectField, validators
+from wtforms import BooleanField, StringField, SelectField, HiddenField, validators
 from wtforms.validators import Required
 from wtforms.widgets import (CheckboxInput, HiddenInput, Select, SubmitInput, TextInput, Option)
 
 class SegmentPrototypeForm(Form):
+    id = HiddenField()
     ipa_name = StringField(u'IPA Name', [validators.InputRequired()])
     ipa_symbol = StringField(u'IPA Symbol', [validators.Length(min=1, max=3)])
     ipa_group = SelectField(u'IPA Group', choices=[('', '--'),

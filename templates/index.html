@@ -63,39 +63,48 @@
       {% endfor %}
       <div class="form_container">
         {% if session.logged_in %}
-            <table id="add-segment-prototype-table">
-              <thead>
-                <tr>
+          <table id="add-segment-prototype-table">
+            <thead>
+              <tr>
+                {% for field in form %}
+                  <th class="column_label">{{ field.label(for = field.name + '[]') }}</th>
+                {% endfor %}
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <form id="segment-prototype-form" action={{ url_for('add_segment_prototype') }} method="POST">
                   {% for field in form %}
-                    <th class="column_label">{{ field.label(for = field.name + '[]') }}</th>
+                    {% if field.type == "BooleaField" %}
+                      <td class="input_cell">{{ field(id = field.name + '[]', value = '1' ) }}</td>
+                    {% else %}
+                      <td class="input_cell">{{ field(id = field.name + '[]') }}</td>
+                    {% endif %}
                   {% endfor %}
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
+                  <td><input class="btn btn-default" name="add" value="Add" type="submit"></input></td>
+                </form>
+              </tr>
+
+              {% for edit_form in edit_forms %}
                 <tr>
-                  <form id="segment-prototype-form" action={{ url_for('add_segment_prototype') }} method="POST">
-                    {% for field in form %}
-                      {% if field.type == "BooleanField" %}
-                        <td class="input_cell">{{ field(id = field.name + '[]', value = '1' ) }}</td>
-                      {% else %}
-                        <td class="input_cell">{{ field(id = field.name + '[]') }}</td>
-                      {% endif %}
-                    {% endfor %}
-                    <td><input class="btn btn-default" name="add" value="Add" type="submit"></input></td>
-                  </form>
-                </tr>
-              </tbody>
-            </table>
+                  <form id="segment-prototype-form-{{ edit_form.data.id }}" action={{ url_for('edit_segment_prototype', id = edit_form.data.id) }} method="POST">
+                      {% for field in edit_form %}
+                        {% if field.type == "BooleaField" %}
+                          <td class="input_cell">{{ field(id = field.name + '-{{ edit_form.data.id }}', value = '1' ) }}</td>
+                        {% else %}
+                          <td class="input_cell">{{ field(id = field.name + '-{{ edit_form.data.id }}') }}</td>
+                        {% endif %}
+                      {% endfor %}
+                      <td><input class="btn btn-default" name="edit" value="Edit" type="submit"></input></td>
+                    </form>
+                  </tr>
+                {% else %}
+                <tr><td colspan="32">No Segment Prototypes yet. Add some.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
         {% endif %}
       </div>
-      <br>
-      {% for segment_prototype in segment_prototypes %}
-        <li class="segment_prototype"><h2>{{ segment_prototype.ipa_symbol }}</h2>{{ segment_prototype.ipa_name|safe }}
-      {% else %}
-        <li><em>No segments yet. Add some!</em>
-      {% endfor %}
-      </ul>
-    </div>
   </body>
 </html>

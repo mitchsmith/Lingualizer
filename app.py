@@ -18,16 +18,25 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
 app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
+
 import models
 from forms import SegmentPrototypeForm
 
+from flask.ext.wtf import Form
+#from wtforms.ext.appengine.db import model_form
+from wtforms.ext.sqlalchemy.orm import model_form
 # routes
 @app.route('/')
 def index():
     """Segment_prototype list view."""
     segment_prototypes = db.session.query(models.SegmentPrototype)
     form = SegmentPrototypeForm()
-    return render_template('index.html', segment_prototypes=segment_prototypes, form=form)
+    edit_forms = []
+    for idx, segment_prototype in enumerate(segment_prototypes):
+        EditSegmentPrototypeForm = SegmentPrototypeForm
+        edit_form = EditSegmentPrototypeForm(obj=segment_prototype)
+        edit_forms.append(edit_form) 
+    return render_template('index.html', segment_prototypes=segment_prototypes, form=form, edit_forms=edit_forms)
 
 @app.route('/add', methods=['POST'])
 def add_segment_prototype():
@@ -73,6 +82,23 @@ def add_segment_prototype():
         db.session.commit()
         flash('New segment_prototype was successfully posted')
     return redirect(url_for('index'))
+
+@app.route('/edit/<id>', methods=['GET','POST'])
+def edit_segment_prototype(id):
+    EditSegmentPrototypeForm = model_form(models.SegmentPrototype, base_class=Form)
+    model = models.SegmentPrototype.query.get(id);
+    form = EditSegmentPrototypeForm(request.form, model)
+
+    if form.validate_on_submit():
+        form.populate_obj(model)
+        #model.put()
+        #models.SegmentPrototype.query.update(model);
+        #model.query.update()
+        db.session.merge(model)
+        db.session.commit()
+        flash("Segment prototype updated")
+        return redirect(url_for("index"))
+    return render_template("edit.html", form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
