@@ -7,7 +7,15 @@
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
     <style type="text/css">
-
+      header {
+        width:100%;
+        height: 100px;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        position: fixed;
+        z-index: 100;
+      }
       input, lable, table, thead, tbody, tr, th, td {
         margin: 0;
         padding: 0; 
@@ -15,14 +23,28 @@
       table, thead, tbody, tr, th, td {
         border: 0;
       }
+      table {
+        margin-top: 215px;
+      }
       thead {
         height: 120px;
+        position: fixed;
+        margin-top: -115px;
+      }
+      thead > tr {
+        height:115px;
       }
 
       th.column_label {
         width: 1em;
         text-allign: left;
         vertical-align: bottom;
+      }
+      th.column_label.wide {
+        width: 3em;
+      }
+      th.hidden {
+        display:none;
       }
       label {
         /* display: none; */
@@ -52,24 +74,28 @@
   </head>
   <body>
     <div class="container">
-      <h1>Lingualizer-TDD</h1>
-      {% if not session.logged_in %}
-        <a href="{{ url_for('login') }}">log in</a>
-      {% else %}
-        <a href="{{ url_for('logout') }}">log out</a>
-      {% endif %}
-      {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-      {% endfor %}
+      <header>
+        <h1>Lingualizer-TDD</h1>
+        {% if not session.logged_in %}
+          <a href="{{ url_for('login') }}">log in</a>
+        {% else %}
+          <a href="{{ url_for('logout') }}">log out</a>
+        {% endif %}
+        {% for message in get_flashed_messages() %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </header>
       <div class="form_container">
         {% if session.logged_in %}
           <table id="add-segment-prototype-table">
             <thead>
               <tr>
-                {% for field in form %}
-                  <th class="column_label">{{ field.label(for = field.name + '[]') }}</th>
-                {% endfor %}
                 <th></th>
+                <th></th>
+                {% for field in form %}
+                  <th class="column_label{% if field.name in ['csrf_token','id'] %} hide{% elif field.name.startswith('ipa') and field.name not in ('ipa_name', 'ipa_symbol') %} wide{% endif %}">{{ field.label(for = field.name + '[]') }}</th>
+                {% endfor %}
+                <th style="width: 60px; background: #ffffff;"></th>
               </tr>
             </thead>
             <tbody>
