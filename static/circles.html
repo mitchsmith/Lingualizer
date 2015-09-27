@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Circles</title>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <style type="text/css">
+            div.circle {
+                position: absolute;
+                left: 15%;
+                top: 15%;
+                height: 100px;
+                width:100px;
+                text-align: center;
+                vertical-align: middle;
+                color: #ffffff;
+                background: #00ffff;
+                border: none;
+                border-radius: 50px;
+                opacity: .1;
+            }
+            div.circle:hover {
+                cursor: pointer;
+            }
+            span.caption {
+                display: block;
+                height: 100%;
+                position: relative;
+                top: 40%;
+                margin: auto;
+                font-weight: bold;
+            }
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var colors = Array('rgb(0, 255, 255)', 'rgb(255, 0, 255)', 'rgb(255, 255, 0)');
+                for (var i=2; i<4; i++) {
+                    var c = $('.circle').eq(0).clone();
+                    c.find('span').html('Test ' + (i) );
+                    $('body').append(c);
+                    c.attr('data-pos',c.offset().left + 120 * (i - 1) );
+                }
+                $('.circle').each(function(index) {
+                    $(this).css({'background-color': colors[index]});
+                    $(this).animate({'height': '300px', 'width': '300px', 'border-radius': '150px', 'opacity': '.33', 'left': $(this).attr('data-pos')}, 1000);
+                    $(this).click(function(index) {
+                        var pictures = Array('url(images/abarth-exterior-4.jpg) 0 0 no-repeat', 'url(images/abarth-exterior-15.jpg) 0 0 no-repeat', 'url(images/abarth-interior-6.jpg) 0 0 no-repeat');
+                        $('.circle').each(function(index){
+                            $(this).css({'z-index': index + 1, 'height': '300px', 'width': '300px', 'border-radius': '150px', 'opacity': '.33'});
+                        });
+                        $(this).animate({'height': '500px', 'width': '500px', 'border-radius': '250px', 'opacity': '.99'}, 1000, function() {
+                            console.log('Ok: ' + pictures[index]);
+                            //$(this).css({'background': pictures[index], 'z-index': '100'})
+                        });
+                        
+                    });
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="circle"><span class="caption">Test 1</span></div>
+    </body>
+</html>

@@ -1,7 +1,11 @@
 from app import db
+from sqlalchemy import Integer, ForeignKey, String, Column
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+
+Base = declarative_base()
 
 class SegmentPrototype(db.Model):
-
     __tablename__ = "segment_prototype"
     id = db.Column(db.Integer, primary_key=True)
     ipa_group = db.Column(db.String, nullable=False)    
@@ -33,7 +37,9 @@ class SegmentPrototype(db.Model):
     tense = db.Column(db.Boolean, nullable=True)
     radical = db.Column(db.Boolean, nullable=True)
     laryngeal = db.Column(db.Boolean, nullable=True)
-    high = db.Column(db.Boolean, nullable=True) 
+    high = db.Column(db.Boolean, nullable=True)
+
+    
 
     def __init__(self,
         ipa_group,
@@ -100,3 +106,18 @@ class SegmentPrototype(db.Model):
 
     def __repr__(self):
         return '<ipa_symbol {}> <ipa_name {}>'.format(self.ipa_symbol, self.ipa_name)
+
+class Segment(db.Model):
+    __tablename__ = "segment"
+    id = db.Column(db.Integer, primary_key=True)
+    segment_prototype_id = db.Column(db.Integer, db.ForeignKey('segment_prototype.id'), nullable=False)
+    segment_expression_id = db.Column(db.Integer, db.ForeignKey('segment_prototype.id'), nullable=True)
+    segment_prototype = relationship("SegmentPrototype", foreign_keys=[segment_prototype_id])
+    segment_expression = relationship("SegmentPrototype", foreign_keys=[segment_expression_id])
+
+    def __init__(self, segment_ptototype_id, segment_expression_id):
+        self.segment_ptototype_id = segment_ptototype_id
+        self.segment_expression_id = segment_expression_id
+
+    def __repr__(self):
+        return '<segment_prototype {}> <segment_expression {}>'.format(self.segment_prototype.ipa_symbol, self.segment_expression.ipa_symbol)
